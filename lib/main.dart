@@ -1,58 +1,94 @@
 import 'package:flutter/material.dart';
-import 'package:dynamic_color/dynamic_color.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_android_template/providers/language_provider.dart';
-import 'package:flutter_android_template/l10n/app_localizations.dart';
-import 'package:flutter_android_template/features/home/home.dart';
-import 'package:flutter_android_template/providers/theme_provider.dart';
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<StatefulWidget> createState() => _MyAppState();
+void main() {
+  runApp(const FakeSettingsApp());
 }
-class _MyAppState extends State<MyApp> {
+
+class FakeSettingsApp extends StatelessWidget {
+  const FakeSettingsApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    const defaultColorTheme = Colors.blue;
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final languageProvider = Provider.of<LanguageProvider>(context);
-    return DynamicColorBuilder(
-      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-        return MaterialApp(
-          title: 'Template',
-          theme: ThemeData(
-            colorScheme: lightDynamic ?? ColorScheme.fromSeed(
-              seedColor: defaultColorTheme,
-              brightness: Brightness.light,
-            ),
-          ),
-          darkTheme: ThemeData(
-            colorScheme: darkDynamic ?? ColorScheme.fromSeed(
-              seedColor: defaultColorTheme,
-              brightness: Brightness.dark,
-            ),
-          ),
-          themeMode: themeProvider.themeMode,
-          locale: languageProvider.language.toLocale(),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const HomePage(),
-        );
-      },
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Fake Settings',
+      home: SettingsHome(),
     );
   }
 }
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  final entry = MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => ThemeProvider()),
-      ChangeNotifierProvider(create: (_) => LanguageProvider()),
-    ],
-    child: const MyApp(),
-  );
-  runApp(entry);
+class SettingsHome extends StatelessWidget {
+  final List<String> menus = [
+    "Bağlantılar",
+    "Ses",
+    "Bildirimler",
+    "Ekran",
+    "Duvar Kağıdı",
+    "Gelişmiş Özellikler",
+    "Dijital Sağlık",
+    "Güvenlik",
+    "Gizlilik",
+    "Hesaplar",
+    "Yedekleme",
+    "Google",
+    "Erişilebilirlik",
+    "Genel Yönetim",
+    "Yazılım Güncelleme",
+    "Cihaz Hakkında"
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Ayarlar")),
+      body: ListView.builder(
+        itemCount: menus.length,
+        itemBuilder: (context, index) {
+          final item = menus[index];
+          return ListTile(
+            title: Text(item),
+            onTap: () {
+              if (item == "Cihaz Hakkında") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutPhonePage()),
+                );
+              }
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class AboutPhonePage extends StatelessWidget {
+  const AboutPhonePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Cihaz Hakkında")),
+      body: ListView(
+        children: const [
+          ListTile(
+            title: Text("Model Numarası"),
+            subtitle: Text("SM-G998B"),
+          ),
+          ListTile(
+            title: Text("Android Sürümü"),
+            subtitle: Text("16"),
+          ),
+          ListTile(
+            title: Text("One UI Sürümü"),
+            subtitle: Text("8.0"),
+          ),
+          ListTile(
+            title: Text("Yapım Numarası"),
+            subtitle: Text("FAKE123456"),
+          ),
+        ],
+      ),
+    );
+  }
 }
