@@ -1,62 +1,105 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const FakeSettingsApp());
+  runApp(const MySettingsApp());
 }
 
-class FakeSettingsApp extends StatelessWidget {
-  const FakeSettingsApp({super.key});
+class MySettingsApp extends StatelessWidget {
+  const MySettingsApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Fake Settings',
-      home: SettingsHome(),
+      title: 'Ayarlar',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: const SettingsHomePage(),
     );
   }
 }
 
-class SettingsHome extends StatelessWidget {
-  final List<String> menus = [
-    "Bağlantılar",
-    "Ses",
-    "Bildirimler",
-    "Ekran",
-    "Duvar Kağıdı",
-    "Gelişmiş Özellikler",
-    "Dijital Sağlık",
-    "Güvenlik",
-    "Gizlilik",
-    "Hesaplar",
-    "Yedekleme",
-    "Google",
-    "Erişilebilirlik",
-    "Genel Yönetim",
-    "Yazılım Güncelleme",
-    "Cihaz Hakkında"
-  ];
+class SettingsHomePage extends StatelessWidget {
+  const SettingsHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final categories = [
+      {
+        "icon": Icons.wifi,
+        "title": "Bağlantılar",
+        "subtitle": "Wi-Fi • Bluetooth • Mobil veri"
+      },
+      {
+        "icon": Icons.volume_up,
+        "title": "Ses ve titreşim",
+        "subtitle": "Ses modu • Zil sesi • Ses seviyesi"
+      },
+      {
+        "icon": Icons.display_settings,
+        "title": "Ekran",
+        "subtitle": "Parlaklık • Göz konforu • Ekran süresi"
+      },
+      {
+        "icon": Icons.lock,
+        "title": "Güvenlik ve gizlilik",
+        "subtitle": "Ekran kilidi • Güvenli klasör • İzinler"
+      },
+      {
+        "icon": Icons.account_circle,
+        "title": "Samsung account",
+        "subtitle": "Oturum aç • Hesabını yönet"
+      },
+      {
+        "icon": Icons.info,
+        "title": "Telefon hakkında",
+        "subtitle": "Durum bilgileri • Android sürümü"
+      },
+    ];
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Ayarlar")),
-      body: ListView.builder(
-        itemCount: menus.length,
-        itemBuilder: (context, index) {
-          final item = menus[index];
-          return ListTile(
-            title: Text(item),
-            onTap: () {
-              if (item == "Cihaz Hakkında") {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AboutPhonePage()),
+      appBar: AppBar(
+        title: const Text("Ayarlar"),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: "Ayarları ara",
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                var cat = categories[index];
+                return ListTile(
+                  leading: Icon(cat["icon"] as IconData),
+                  title: Text(cat["title"] as String),
+                  subtitle: Text(cat["subtitle"] as String),
+                  onTap: () {
+                    if (cat["title"] == "Telefon hakkında") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AboutPhonePage(),
+                        ),
+                      );
+                    }
+                  },
                 );
-              }
-            },
-          );
-        },
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -67,27 +110,25 @@ class AboutPhonePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final info = {
+      "Cihaz adı": "Galaxy S23 Ultra (Fake)",
+      "Model numarası": "SM-G998B",
+      "Android sürümü": "16",
+      "One UI sürümü": "8.0",
+      "Knox sürümü": "3.10",
+      "Çekirdek sürümü": "5.15.89-gabcdef",
+      "Yapım numarası": "QPR1.240905.001 test-keys",
+    };
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Cihaz Hakkında")),
+      appBar: AppBar(title: const Text("Telefon hakkında")),
       body: ListView(
-        children: const [
-          ListTile(
-            title: Text("Model Numarası"),
-            subtitle: Text("SM-G998B"),
-          ),
-          ListTile(
-            title: Text("Android Sürümü"),
-            subtitle: Text("16"),
-          ),
-          ListTile(
-            title: Text("One UI Sürümü"),
-            subtitle: Text("8.0"),
-          ),
-          ListTile(
-            title: Text("Yapım Numarası"),
-            subtitle: Text("FAKE123456"),
-          ),
-        ],
+        children: info.entries.map((e) {
+          return ListTile(
+            title: Text(e.key),
+            subtitle: Text(e.value),
+          );
+        }).toList(),
       ),
     );
   }
