@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
 
 void main() {
-  runApp(const SettingsCloneApp());
+  runApp(const SettingsApp());
 }
 
-class SettingsCloneApp extends StatelessWidget {
-  const SettingsCloneApp({super.key});
+class SettingsApp extends StatelessWidget {
+  const SettingsApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,132 +15,52 @@ class SettingsCloneApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Ayarlar",
       theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.grey[100],
       ),
-      home: const SettingsHomePage(),
+      home: const SettingsHome(),
     );
   }
 }
 
-class SettingsHomePage extends StatelessWidget {
-  const SettingsHomePage({super.key});
+class SettingsHome extends StatelessWidget {
+  const SettingsHome({super.key});
 
-  Future<void> _openSystem(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    }
+  void _openSystemSetting(String action) {
+    final intent = AndroidIntent(
+      action: action,
+      flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
+    );
+    intent.launch();
   }
 
   @override
   Widget build(BuildContext context) {
-    final settingsGroups = [
-      {
-        "title": "Bağlantılar",
-        "items": [
-          {
-            "icon": Icons.wifi,
-            "title": "Wi-Fi",
-            "subtitle": "Ağlara bağlanın",
-            "url": "android.settings.WIFI_SETTINGS"
-          },
-          {
-            "icon": Icons.bluetooth,
-            "title": "Bluetooth",
-            "subtitle": "Cihazlara bağlanın",
-            "url": "android.settings.BLUETOOTH_SETTINGS"
-          },
-          {
-            "icon": Icons.sim_card,
-            "title": "SIM Kart ve Mobil Ağlar",
-            "subtitle": "Operatör ayarları",
-            "url": "android.settings.DATA_ROAMING_SETTINGS"
-          },
-        ]
-      },
-      {
-        "title": "Cihaz",
-        "items": [
-          {
-            "icon": Icons.notifications,
-            "title": "Bildirimler",
-            "subtitle": "Bildirim tercihleri",
-            "url": "android.settings.NOTIFICATION_SETTINGS"
-          },
-          {
-            "icon": Icons.volume_up,
-            "title": "Ses ve Titreşim",
-            "subtitle": "Zil, medya ve sistem sesleri",
-            "url": "android.settings.SOUND_SETTINGS"
-          },
-          {
-            "icon": Icons.display_settings,
-            "title": "Ekran",
-            "subtitle": "Parlaklık, karanlık mod",
-            "url": "android.settings.DISPLAY_SETTINGS"
-          },
-        ]
-      },
-      {
-        "title": "Kişisel",
-        "items": [
-          {
-            "icon": Icons.lock,
-            "title": "Güvenlik",
-            "subtitle": "Parola, biyometrik veriler",
-            "url": "android.settings.SECURITY_SETTINGS"
-          },
-          {
-            "icon": Icons.privacy_tip,
-            "title": "Gizlilik",
-            "subtitle": "Uygulama izinleri",
-            "url": "android.settings.PRIVACY_SETTINGS"
-          },
-          {
-            "icon": Icons.language,
-            "title": "Genel Yönetim",
-            "subtitle": "Dil, klavye, tarih & saat",
-            "url": "android.settings.LOCALE_SETTINGS"
-          },
-        ]
-      },
-      {
-        "title": "Diğer",
-        "items": [
-          {
-            "icon": Icons.battery_full,
-            "title": "Pil",
-            "subtitle": "Pil kullanımı ve optimizasyon",
-            "url": "android.settings.BATTERY_SAVER_SETTINGS"
-          },
-          {
-            "icon": Icons.storage,
-            "title": "Depolama",
-            "subtitle": "Kullanılan alanı kontrol et",
-            "url": "android.settings.INTERNAL_STORAGE_SETTINGS"
-          },
-          {
-            "icon": Icons.system_update,
-            "title": "Yazılım Güncellemesi",
-            "subtitle": "Android sürümü ve güncellemeler",
-            "url": "android.settings.SYSTEM_UPDATE_SETTINGS"
-          },
-        ]
-      },
-    ];
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Ayarlar", style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
+        elevation: 0,
+        title: const Text("Ayarlar"),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
       body: ListView(
         children: [
-          // Arama kutusu
+          // Samsung Account
+          ListTile(
+            leading: const CircleAvatar(
+              backgroundColor: Colors.blue,
+              child: Icon(Icons.person, color: Colors.white),
+            ),
+            title: const Text("Samsung Account"),
+            subtitle: const Text("Giriş yapın"),
+            onTap: () {},
+          ),
+
+          const Divider(),
+
+          // Arama Çubuğu
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8.0),
             child: TextField(
               decoration: InputDecoration(
                 hintText: "Ayarları ara",
@@ -148,73 +69,126 @@ class SettingsHomePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                 ),
                 filled: true,
-                fillColor: Colors.grey[200],
+                fillColor: Colors.white,
               ),
             ),
           ),
-          // Samsung Account Kartı
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: const ListTile(
-                leading: CircleAvatar(
-                  child: Icon(Icons.person, color: Colors.white),
-                ),
-                title: Text("Samsung Account"),
-                subtitle: Text("Oturum açın, verilerinizi senkronize edin"),
-                trailing: Icon(Icons.arrow_forward_ios, size: 18),
-              ),
-            ),
+
+          const Divider(),
+
+          // 🔹 1. Grup
+          SettingsGroup(title: "Bağlantılar", tiles: [
+            SettingsTile("Wi-Fi", Icons.wifi, () => _openSystemSetting("android.settings.WIFI_SETTINGS")),
+            SettingsTile("Bluetooth", Icons.bluetooth, () => _openSystemSetting("android.settings.BLUETOOTH_SETTINGS")),
+            SettingsTile("Uçak Modu", Icons.flight, () => _openSystemSetting("android.settings.AIRPLANE_MODE_SETTINGS")),
+            SettingsTile("Mobil Ağlar", Icons.network_cell, () => _openSystemSetting("android.settings.DATA_ROAMING_SETTINGS")),
+          ]),
+
+          // 🔹 2. Grup
+          SettingsGroup(title: "Ses ve Titreşim", tiles: [
+            SettingsTile("Ses", Icons.volume_up, () => _openSystemSetting("android.settings.SOUND_SETTINGS")),
+            SettingsTile("Titreşim", Icons.vibration, () => _openSystemSetting("android.settings.SOUND_SETTINGS")),
+          ]),
+
+          // 🔹 3. Grup
+          SettingsGroup(title: "Görüntü", tiles: [
+            SettingsTile("Ekran", Icons.phone_android, () => _openSystemSetting("android.settings.DISPLAY_SETTINGS")),
+            SettingsTile("Duvar Kağıdı", Icons.wallpaper, () => _openSystemSetting("android.settings.WALLPAPER_SETTINGS")),
+            SettingsTile("Tema", Icons.color_lens, () {}),
+          ]),
+
+          // 🔹 4. Grup
+          SettingsGroup(title: "Biyometrik ve Güvenlik", tiles: [
+            SettingsTile("Parmak izi", Icons.fingerprint, () => _openSystemSetting("android.settings.SECURITY_SETTINGS")),
+            SettingsTile("Yüz Tanıma", Icons.face, () {}),
+            SettingsTile("Knox Güvenliği", Icons.shield, () {}),
+          ]),
+
+          // 🔹 5. Grup
+          SettingsGroup(title: "Hesaplar", tiles: [
+            SettingsTile("Google", Icons.account_circle, () => _openSystemSetting("android.settings.ADD_ACCOUNT_SETTINGS")),
+            SettingsTile("Samsung Account", Icons.cloud, () {}),
+          ]),
+
+          // 🔹 6. Grup
+          SettingsGroup(title: "Sistem", tiles: [
+            SettingsTile("Dil ve Girdi", Icons.language, () => _openSystemSetting("android.settings.LOCALE_SETTINGS")),
+            SettingsTile("Yedekleme", Icons.backup, () => _openSystemSetting("android.settings.BACKUP_AND_RESET_SETTINGS")),
+            SettingsTile("Geliştirici Seçenekleri", Icons.code, () => _openSystemSetting("android.settings.APPLICATION_DEVELOPMENT_SETTINGS")),
+            SettingsTile("Telefon Hakkında", Icons.info, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AboutPhonePage()),
+              );
+            }),
+          ]),
+        ],
+      ),
+    );
+  }
+}
+
+class SettingsGroup extends StatelessWidget {
+  final String title;
+  final List<SettingsTile> tiles;
+
+  const SettingsGroup({super.key, required this.title, required this.tiles});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
-          const SizedBox(height: 10),
+          const Divider(),
+          ...tiles,
+        ],
+      ),
+    );
+  }
+}
 
-          // Gruplar
-          for (var group in settingsGroups) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text(group["title"] as String,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              child: Column(
-                children: [
-                  for (var i = 0; i < (group["items"] as List).length; i++) ...[
-                    ListTile(
-                      leading: Icon((group["items"] as List)[i]["icon"] as IconData),
-                      title: Text((group["items"] as List)[i]["title"]),
-                      subtitle: Text((group["items"] as List)[i]["subtitle"]),
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                      onTap: () {
-                        final url =
-                            "android-app://${(group["items"] as List)[i]["url"]}";
-                        _openSystem(url);
-                      },
-                    ),
-                    if (i != (group["items"] as List).length - 1)
-                      const Divider(indent: 70, height: 0),
-                  ]
-                ],
-              ),
-            )
-          ],
+class SettingsTile extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final VoidCallback onTap;
 
-          const SizedBox(height: 20),
+  const SettingsTile(this.title, this.icon, this.onTap, {super.key});
 
-          // Telefon Hakkında
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: ListTile(
-                leading: const Icon(Icons.info, color: Colors.blue),
-                title: const Text("Telefon Hakkında"),
-                subtitle: const Text("Model: OneUI 8 • Android
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.blue),
+      title: Text(title),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
+    );
+  }
+}
+
+class AboutPhonePage extends StatelessWidget {
+  const AboutPhonePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Telefon Hakkında"),
+      ),
+      body: ListView(
+        children: const [
+          ListTile(title: Text("Cihaz Adı"), subtitle: Text("Galaxy S25 Ultra")),
+          ListTile(title: Text("Model Numarası"), subtitle: Text("SM-S928B")),
+          ListTile(title: Text("One UI Sürümü"), subtitle: Text("8.0")),
+          ListTile(title: Text("Android Sürümü"), subtitle: Text("16")),
+          ListTile(title: Text("Knox Sürümü"), subtitle: Text("Knox 4.1")),
+          ListTile(title: Text("Yapım Numarası"), subtitle: Text("QP1A.190711.020.S928BXXU1AWF1")),
+        ],
+      ),
+    );
+  }
+}
