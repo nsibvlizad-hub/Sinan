@@ -2,190 +2,219 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const SettingsCloneApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class SettingsCloneApp extends StatelessWidget {
+  const SettingsCloneApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Ayarlar',
+      title: "Ayarlar",
       theme: ThemeData(
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const SettingsHome(),
+      home: const SettingsHomePage(),
     );
   }
 }
 
-class SettingsHome extends StatelessWidget {
-  const SettingsHome({super.key});
+class SettingsHomePage extends StatelessWidget {
+  const SettingsHomePage({super.key});
 
-  Future<void> _openSystemSettings() async {
-    const url = 'package:com.android.settings';
-    try {
-      await launchUrl(Uri.parse('android-app://$url'));
-    } catch (e) {
-      debugPrint("Sistem ayarları açılamadı: $e");
+  Future<void> _openSystem(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final categories = [
-      {"icon": Icons.wifi, "title": "Bağlantılar", "desc": "Wi-Fi • Bluetooth • Uçak modu"},
-      {"icon": Icons.speaker, "title": "Ses ve titreşim", "desc": "Ses modu • Zil sesi • Ses seviyesi"},
-      {"icon": Icons.notifications, "title": "Bildirimler", "desc": "Bildirim geçmişi • Baloncuklar"},
-      {"icon": Icons.do_not_disturb, "title": "Rahatsız Etme", "desc": "Zamanlama • İstisnalar"},
-      {"icon": Icons.wallpaper, "title": "Duvar kağıdı ve stil", "desc": "Ana ekran • Kilit ekranı"},
-      {"icon": Icons.display_settings, "title": "Ekran", "desc": "Parlaklık • Göz rahatlığı • Karanlık mod"},
-      {"icon": Icons.accessibility, "title": "Erişilebilirlik", "desc": "Görme • İşitme • Etkileşim"},
-      {"icon": Icons.lock, "title": "Güvenlik ve gizlilik", "desc": "Ekran kilidi • Google Play Protect"},
-      {"icon": Icons.battery_full, "title": "Pil ve cihaz bakımı", "desc": "Pil • Depolama • RAM"},
-      {"icon": Icons.apps, "title": "Uygulamalar", "desc": "Varsayılan uygulamalar • İzinler"},
-      {"icon": Icons.language, "title": "Genel yönetim", "desc": "Dil ve klavye • Tarih ve saat"},
-      {"icon": Icons.account_circle, "title": "Hesaplar ve yedekleme", "desc": "Samsung Cloud • Smart Switch"},
-      {"icon": Icons.child_care, "title": "Dijital sağlık ve ebeveyn denetimi", "desc": "Ekran süresi • Uyku modu"},
-      {"icon": Icons.location_on, "title": "Konum", "desc": "Uygulama izinleri • Hizmetler"},
-      {"icon": Icons.safety_check, "title": "Güvenlik güncellemeleri", "desc": "Knox • Google Play sistemi"},
-      {"icon": Icons.info, "title": "Telefon hakkında", "desc": "Android sürümü, One UI bilgisi"},
+    final settingsGroups = [
+      {
+        "title": "Bağlantılar",
+        "items": [
+          {
+            "icon": Icons.wifi,
+            "title": "Wi-Fi",
+            "subtitle": "Ağlara bağlanın",
+            "url": "android.settings.WIFI_SETTINGS"
+          },
+          {
+            "icon": Icons.bluetooth,
+            "title": "Bluetooth",
+            "subtitle": "Cihazlara bağlanın",
+            "url": "android.settings.BLUETOOTH_SETTINGS"
+          },
+          {
+            "icon": Icons.sim_card,
+            "title": "SIM Kart ve Mobil Ağlar",
+            "subtitle": "Operatör ayarları",
+            "url": "android.settings.DATA_ROAMING_SETTINGS"
+          },
+        ]
+      },
+      {
+        "title": "Cihaz",
+        "items": [
+          {
+            "icon": Icons.notifications,
+            "title": "Bildirimler",
+            "subtitle": "Bildirim tercihleri",
+            "url": "android.settings.NOTIFICATION_SETTINGS"
+          },
+          {
+            "icon": Icons.volume_up,
+            "title": "Ses ve Titreşim",
+            "subtitle": "Zil, medya ve sistem sesleri",
+            "url": "android.settings.SOUND_SETTINGS"
+          },
+          {
+            "icon": Icons.display_settings,
+            "title": "Ekran",
+            "subtitle": "Parlaklık, karanlık mod",
+            "url": "android.settings.DISPLAY_SETTINGS"
+          },
+        ]
+      },
+      {
+        "title": "Kişisel",
+        "items": [
+          {
+            "icon": Icons.lock,
+            "title": "Güvenlik",
+            "subtitle": "Parola, biyometrik veriler",
+            "url": "android.settings.SECURITY_SETTINGS"
+          },
+          {
+            "icon": Icons.privacy_tip,
+            "title": "Gizlilik",
+            "subtitle": "Uygulama izinleri",
+            "url": "android.settings.PRIVACY_SETTINGS"
+          },
+          {
+            "icon": Icons.language,
+            "title": "Genel Yönetim",
+            "subtitle": "Dil, klavye, tarih & saat",
+            "url": "android.settings.LOCALE_SETTINGS"
+          },
+        ]
+      },
+      {
+        "title": "Diğer",
+        "items": [
+          {
+            "icon": Icons.battery_full,
+            "title": "Pil",
+            "subtitle": "Pil kullanımı ve optimizasyon",
+            "url": "android.settings.BATTERY_SAVER_SETTINGS"
+          },
+          {
+            "icon": Icons.storage,
+            "title": "Depolama",
+            "subtitle": "Kullanılan alanı kontrol et",
+            "url": "android.settings.INTERNAL_STORAGE_SETTINGS"
+          },
+          {
+            "icon": Icons.system_update,
+            "title": "Yazılım Güncellemesi",
+            "subtitle": "Android sürümü ve güncellemeler",
+            "url": "android.settings.SYSTEM_UPDATE_SETTINGS"
+          },
+        ]
+      },
     ];
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            floating: true,
-            snap: true,
-            expandedHeight: 100,
-            flexibleSpace: const FlexibleSpaceBar(
-              title: Text("Ayarlar"),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                children: [
-                  // Arama kutusu
-                  TextField(
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.search),
-                      hintText: "Ayarlar içinde ara",
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  // Samsung account kartı
-                  Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    child: ListTile(
-                      leading: const CircleAvatar(
-                        backgroundColor: Colors.blue,
-                        child: Icon(Icons.person, color: Colors.white),
-                      ),
-                      title: const Text("Samsung Account"),
-                      subtitle: const Text("Hesabınıza giriş yapın"),
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 18),
-                    ),
-                  ),
-                ],
+      appBar: AppBar(
+        title: const Text("Ayarlar", style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+      body: ListView(
+        children: [
+          // Arama kutusu
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: "Ayarları ara",
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
               ),
             ),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final cat = categories[index];
-                return Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  child: ListTile(
-                    leading: Icon(cat["icon"] as IconData, color: Colors.blue),
-                    title: Text(cat["title"] as String),
-                    subtitle: Text(cat["desc"] as String),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 18),
-                    onTap: () {
-                      if (cat["title"] == "Telefon hakkında") {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const AboutPhonePage(),
-                          ),
-                        );
-                      } else {
-                        _openSystemSettings();
-                      }
-                    },
-                  ),
-                );
-              },
-              childCount: categories.length,
+          // Samsung Account Kartı
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const ListTile(
+                leading: CircleAvatar(
+                  child: Icon(Icons.person, color: Colors.white),
+                ),
+                title: Text("Samsung Account"),
+                subtitle: Text("Oturum açın, verilerinizi senkronize edin"),
+                trailing: Icon(Icons.arrow_forward_ios, size: 18),
+              ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
+          const SizedBox(height: 10),
 
-class AboutPhonePage extends StatelessWidget {
-  const AboutPhonePage({super.key});
+          // Gruplar
+          for (var group in settingsGroups) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Text(group["title"] as String,
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: Column(
+                children: [
+                  for (var i = 0; i < (group["items"] as List).length; i++) ...[
+                    ListTile(
+                      leading: Icon((group["items"] as List)[i]["icon"] as IconData),
+                      title: Text((group["items"] as List)[i]["title"]),
+                      subtitle: Text((group["items"] as List)[i]["subtitle"]),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        final url =
+                            "android-app://${(group["items"] as List)[i]["url"]}";
+                        _openSystem(url);
+                      },
+                    ),
+                    if (i != (group["items"] as List).length - 1)
+                      const Divider(indent: 70, height: 0),
+                  ]
+                ],
+              ),
+            )
+          ],
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Telefon hakkında")),
-      body: ListView(
-        children: const [
-          ListTile(
-            title: Text("Cihaz adı"),
-            subtitle: Text("Galaxy S25 Ultra"),
-          ),
-          Divider(),
-          ListTile(
-            title: Text("Model numarası"),
-            subtitle: Text("SM-S928B"),
-          ),
-          Divider(),
-          ListTile(
-            title: Text("Android sürümü"),
-            subtitle: Text("16"),
-          ),
-          Divider(),
-          ListTile(
-            title: Text("One UI sürümü"),
-            subtitle: Text("8.0"),
-          ),
-          Divider(),
-          ListTile(
-            title: Text("Knox sürümü"),
-            subtitle: Text("4.1"),
-          ),
-          Divider(),
-          ListTile(
-            title: Text("Çekirdek sürümü"),
-            subtitle: Text("5.15.68"),
-          ),
-          Divider(),
-          ListTile(
-            title: Text("Yapım numarası"),
-            subtitle: Text("UP1A.250805.001"),
-          ),
-        ],
-      ),
-    );
-  }
-}
+          const SizedBox(height: 20),
+
+          // Telefon Hakkında
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: ListTile(
+                leading: const Icon(Icons.info, color: Colors.blue),
+                title: const Text("Telefon Hakkında"),
+                subtitle: const Text("Model: OneUI 8 • Android
