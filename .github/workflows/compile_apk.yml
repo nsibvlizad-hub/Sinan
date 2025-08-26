@@ -3,8 +3,8 @@ name: Build Android APK
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:   # Elle çalıştırma butonu da ekler
+      - master
+  workflow_dispatch:
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.0'   # senin kullandığın sürüme göre değiştir
+          flutter-version: '3.16.0'
 
       - name: Install dependencies
         run: flutter pub get
