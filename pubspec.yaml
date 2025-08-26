@@ -1,5 +1,5 @@
 name: fake_settings
-description: "Samsung stili sahte ayarlar uygulaması. 30+ kategori, sahte Telefon Hakkında sayfası ve sistem ayarlarına yönlendirme içerir."
+description: A fake settings app with categories
 publish_to: "none"
 
 version: 1.0.0+1
@@ -10,18 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^1.0.8
-
-  # 🔹 Sistem ayarlarını açmak için
-  url_launcher: ^6.3.1
-  android_intent_plus: ^4.0.3
-
-  # 🔹 Samsung benzeri ikonlar
-  font_awesome_flutter: ^10.7.0
-
-  # 🔹 Durum kaydı için
-  shared_preferences: ^2.5.3
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
